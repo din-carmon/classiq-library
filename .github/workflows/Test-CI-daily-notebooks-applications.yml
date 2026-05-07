@@ -1383,6 +1383,10 @@ jobs:
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
 
+      - name: Summarize test results (gqsp)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
+
       - name: Run Notebooks (grover)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_grover.py
         env:
@@ -1395,6 +1399,10 @@ jobs:
           # Altering test behavior
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
+
+      - name: Summarize test results (grover)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
 
       - name: Run Notebooks (hadamard_test)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_hadamard_test.py
@@ -1409,6 +1417,10 @@ jobs:
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
 
+      - name: Summarize test results (hadamard_test)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
+
       - name: Run Notebooks (hamiltonian_simulation_guide)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_hamiltonian_simulation_guide.py
         env:
@@ -1421,6 +1433,10 @@ jobs:
           # Altering test behavior
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
+
+      - name: Summarize test results (hamiltonian_simulation_guide)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
 
       # - name: Run Notebooks (hamiltonian_simulation_with_block_encoding)
       #   run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_hamiltonian_simulation_with_block_encoding.py
@@ -1448,6 +1464,10 @@ jobs:
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
 
+      - name: Summarize test results (hhl)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
+
       - name: Run Notebooks (hidden_shift)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_hidden_shift.py
         env:
@@ -1460,6 +1480,10 @@ jobs:
           # Altering test behavior
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
+
+      - name: Summarize test results (hidden_shift)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
 
       - name: Run Notebooks (qsvt_fixed_point_amplitude_amplification)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_qsvt_fixed_point_amplitude_amplification.py
@@ -1474,6 +1498,10 @@ jobs:
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
 
+      - name: Summarize test results (qsvt_fixed_point_amplitude_amplification)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
+
       - name: Run Notebooks (qsvt_matrix_inversion)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_qsvt_matrix_inversion.py
         env:
@@ -1486,6 +1514,10 @@ jobs:
           # Altering test behavior
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
+
+      - name: Summarize test results (qsvt_matrix_inversion)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
 
       - name: Run Notebooks (time_marching)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_time_marching.py
@@ -1500,6 +1532,10 @@ jobs:
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
 
+      - name: Summarize test results (time_marching)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
+
       - name: Run Notebooks (vqls_with_lcu)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_vqls_with_lcu.py
         env:
@@ -1513,7 +1549,33 @@ jobs:
           CLASSIQ_IDE: "https://nightly.platform.classiq.io"
           CLASSIQ_HOST: "https://nightly.platform.classiq.io"
 
+      - name: Summarize test results (vqls_with_lcu)
+        if: always()
+        run: cat /tmp/output ; rm /tmp/output
+
       # # Summarize results for Slack copy-paste
       # - name: Summarize test results
       #   if: always()
       #   run: python .github/scripts/summarize_test_results.py --workflow-name "applications"
+
+
+
+
+
+
+
+
+# Next time:
+#   inside each notebook, add a cell that does:
+#     which python
+#     show which classiq is installed
+#       python -c "import classiq; print(classiq)"
+#     show which config is being used
+#       python -c "import classiq; print(classiq._internals.config.init())"
+#     show all the "host checker" stuff
+#     show machine details (machine id ; hostname ; ...)
+#     show jupyter version
+#     show testbook/nbconvert locations and versions
+
+#     run all of this from within the kernel
+#     write them to file, and in the next step do "if always() cat file"

@@ -125,6 +125,102 @@ class NotebookReplace:
         return replacements
 
     def __enter__(self):
+        injected_cell_hostchecker = {
+           "cell_type": "code",
+           "execution_count": 1,
+           "id": "11111111",
+           "metadata": {},
+           "outputs": [],
+           "source": [
+            "import datetime\n",
+            "from classiq._internals import config\n",
+            "from classiq._internals.client import Client\n",
+            "from classiq._internals.host_checker import HostChecker\n",
+            "from classiq.interface._version import VERSION as _VERSION\n",
+            "from classiq.interface.interface_version import INTERFACE_VERSION\n",
+            "\n",
+            "c = Client(config.init())\n",
+            "x = c.sync_call_api('get', '/interface_versions', use_versioned_url=False)\n",
+            "\n",
+            "checker = HostChecker(c, client_version=_VERSION)\n",
+            "\n",
+            "with open('/tmp/output', 'a') as f:\n",
+            "    f.write(f'{datetime.datetime.now()}\\n')\n",
+            "    f.write(f'{_VERSION=}\\n')\n",
+            "    f.write(f'{_VERSION=}\\n')\n",
+            "    f.write(f'{INTERFACE_VERSION=}\\n')\n",
+            "    f.write(f'{x=}\\n')\n",
+            "    f.write(f'{checker._get_interface_version()}\\n')\n",
+            "    f.write(f'{checker._get_host_version()}\\n')\n",
+           ]
+          }
+        injected_cell_process = {
+           "cell_type": "code",
+           "execution_count": 1,
+           "id": "22222222",
+           "metadata": {},
+           "outputs": [],
+           "source": [
+            "import os\n",
+            "\n",
+            "with open('/tmp/output', 'a') as f:\n",
+            "    f.write(f'{os.getcwd()=}\\n')\n",
+            "    exe = os.readlink(f'/proc/{os.getpid()}/exe')\n",
+            "    f.write(f'{exe=}\\n')\n",
+            "\n",
+            "    import classiq\n",
+            "    f.write(f'{classiq.__version__=}\\n')\n",
+            "    f.write(f'{classiq.__file__=}\\n')\n",
+            "    f.write(f'{classiq._internals.config.init()=}\\n')\n",
+            "\n",
+            "    import jupyterlab\n",
+            "    f.write(f'{jupyterlab.__version__=}\\n')\n",
+            "    f.write(f'{jupyterlab.__file__=}\\n')\n",
+            "\n",
+            "    import nbconvert\n",
+            "    f.write(f'{nbconvert.__version__=}\\n')\n",
+            "    f.write(f'{nbconvert.__file__=}\\n')\n",
+            "\n",
+            "    import testbook\n",
+            "    f.write(f'{testbook.__version__=}\\n')\n",
+            "    f.write(f'{testbook.__file__=}\\n')\n",
+            "\n",
+            "os.system('which python >> /tmp/output 2>&1')\n",
+            "os.system('which python3 >> /tmp/output 2>&1')\n",
+            "os.system('python -c \"import classiq; print(classiq)\" >> /tmp/output 2>&1')\n",
+            "os.system('python -c \"import classiq; print(classiq._internals.config.init())\" >> /tmp/output 2>&1')\n",
+            "os.system('hostname >> /tmp/output 2>&1')\n",
+            "os.system('cat /etc/machine-id >> /tmp/output 2>&1')\n",
+            "os.system('python -m jupyterlab --version >> /tmp/output 2>&1')\n",
+            "os.system('python -c \"import jupyterlab; print(jupyterlab)\" >> /tmp/output 2>&1')\n",
+            "os.system('python -c \"import nbconvert; print(nbconvert)\" >> /tmp/output 2>&1')\n",
+            "os.system('python -c \"import testbook; print(testbook)\" >> /tmp/output 2>&1')\n",
+           ]
+          }
+        self._backup_notebook()
+        self.was_file_copied = True
+
+        with open(self.file_path, "r") as f:
+            content = json.load(f)
+        content["cells"].insert(0, injected_cell_hostchecker)
+        content["cells"].insert(0, injected_cell_process)
+        with open(self.file_path, 'w') as f:
+            json.dump(content, f, indent=2)
+        return self
+
+        used_replacements = []
+
+        for pattern, replace in self.replacements:
+            new_content = re.sub(pattern, replace, content)
+            if new_content != content:
+                used_replacements.append((pattern, replace))
+            content = new_content
+
+        # write edited content
+        with open(self.file_path, "w") as f:
+            f.write(content)
+
+
         if self.replacements:
             self._backup_notebook()
             self.was_file_copied = True
@@ -137,6 +233,10 @@ class NotebookReplace:
         return self
 
     def __exit__(self, *args, **kwargs):
+        if self.was_file_copied:
+            self._restore_notebook_from_backup()
+            return
+
         if not self.replacements:
             return
         if not self.was_file_copied:
