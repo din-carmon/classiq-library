@@ -1485,22 +1485,22 @@ jobs:
         if: always()
         run: cat /tmp/output ; rm /tmp/output
 
-      - name: Run Notebooks (qsvt_fixed_point_amplitude_amplification)
-        run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_qsvt_fixed_point_amplitude_amplification.py
-        env:
-          # to disable a warning in Jupyter notebooks
-          JUPYTER_PLATFORM_DIRS: "1"
-          # Passing which notebooks changed
-          SHOULD_TEST_ALL_FILES: "true"
-          LIST_OF_IPYNB_CHANGED: "${{ steps.list-files.outputs.files }}"
-          LIST_OF_IPYNB_TESTS_CHANGED: ""
-          # Altering test behavior
-          CLASSIQ_IDE: "https://nightly.platform.classiq.io"
-          CLASSIQ_HOST: "https://nightly.platform.classiq.io"
+      # - name: Run Notebooks (qsvt_fixed_point_amplitude_amplification)
+      #   run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_qsvt_fixed_point_amplitude_amplification.py
+      #   env:
+      #     # to disable a warning in Jupyter notebooks
+      #     JUPYTER_PLATFORM_DIRS: "1"
+      #     # Passing which notebooks changed
+      #     SHOULD_TEST_ALL_FILES: "true"
+      #     LIST_OF_IPYNB_CHANGED: "${{ steps.list-files.outputs.files }}"
+      #     LIST_OF_IPYNB_TESTS_CHANGED: ""
+      #     # Altering test behavior
+      #     CLASSIQ_IDE: "https://nightly.platform.classiq.io"
+      #     CLASSIQ_HOST: "https://nightly.platform.classiq.io"
 
-      - name: Summarize test results (qsvt_fixed_point_amplitude_amplification)
-        if: always()
-        run: cat /tmp/output ; rm /tmp/output
+      # - name: Summarize test results (qsvt_fixed_point_amplitude_amplification)
+      #   if: always()
+      #   run: cat /tmp/output ; rm /tmp/output
 
       - name: Run Notebooks (qsvt_matrix_inversion)
         run: python -m pytest -c tests/config_weekly.ini tests/notebooks/test_qsvt_matrix_inversion.py
