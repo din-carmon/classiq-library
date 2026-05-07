@@ -77,6 +77,13 @@ jobs:
           shopt -s globstar
           echo "files=$(echo applications/**/*.ipynb)" >> $GITHUB_OUTPUT
 
+      - name: run some code
+        run: |
+          echo $PATH
+        env:
+          CLASSIQ_IDE: "https://nightly.platform.classiq.io"
+          CLASSIQ_HOST: "https://nightly.platform.classiq.io"
+
       - name: run some python
         shell: python
         run: |
