@@ -199,6 +199,7 @@ class NotebookReplace:
             "os.system('python -c \"import testbook; print(testbook)\" >> /tmp/output 2>&1')\n",
            ]
           }
+
         self._backup_notebook()
         self.was_file_copied = True
 
@@ -208,20 +209,11 @@ class NotebookReplace:
         content["cells"].insert(0, injected_cell_process)
         with open(self.file_path, 'w') as f:
             json.dump(content, f, indent=2)
+
+        self.replacements = [("(?<=\")(\\s*!\\s*pip)", "# \\1")]
+        self._replace_notebook_content()
+
         return self
-
-        used_replacements = []
-
-        for pattern, replace in self.replacements:
-            new_content = re.sub(pattern, replace, content)
-            if new_content != content:
-                used_replacements.append((pattern, replace))
-            content = new_content
-
-        # write edited content
-        with open(self.file_path, "w") as f:
-            f.write(content)
-
 
         if self.replacements:
             self._backup_notebook()
