@@ -132,7 +132,6 @@ class NotebookReplace:
            "metadata": {},
            "outputs": [],
            "source": [
-            "import datetime\n",
             "from classiq._internals import config\n",
             "from classiq._internals.client import Client\n",
             "from classiq._internals.host_checker import HostChecker\n",
@@ -145,7 +144,6 @@ class NotebookReplace:
             "checker = HostChecker(c, client_version=_VERSION)\n",
             "\n",
             "with open('/tmp/output', 'a') as f:\n",
-            "    f.write(f'{datetime.datetime.now()}\\n')\n",
             "    f.write(f'{_VERSION=}\\n')\n",
             "    f.write(f'{_VERSION=}\\n')\n",
             "    f.write(f'{INTERFACE_VERSION=}\\n')\n",
@@ -162,8 +160,12 @@ class NotebookReplace:
            "outputs": [],
            "source": [
             "import os\n",
+            "import datetime\n",
             "\n",
             "with open('/tmp/output', 'a') as f:\n",
+            "    f.write(f'-----------------------\\n')\n",
+            "    f.write(f'{datetime.datetime.now()}\\n')\n",
+            "\n",
             "    f.write(f'{os.getcwd()=}\\n')\n",
             "    exe = os.readlink(f'/proc/{os.getpid()}/exe')\n",
             "    f.write(f'{exe=}\\n')\n",
